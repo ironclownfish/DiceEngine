@@ -1,7 +1,7 @@
 
 public abstract class PointCalculator {
 	
-	public static int pointsFrom(byte[] valCounts){
+	public static int pointsFromCounts(byte diceToKeep, byte[] valCounts){
 		int ofAKindPoints = 0;
 		int onesFivesPts = 0;
 		byte pairsFound = 0;
@@ -14,6 +14,9 @@ public abstract class PointCalculator {
 			
 			//3+ of a kind
 			if (valCounts[val] > 2)
+				if (val == 1)
+				ofAKindPoints += 1000*(1<<(valCounts[val]-3));
+					else
 				ofAKindPoints += 100*val*(1<<(valCounts[val]-3));
 			//1s and 5s
 			if (val == 1)
@@ -24,8 +27,8 @@ public abstract class PointCalculator {
 		
 		int points = Math.max(ofAKindPoints, onesFivesPts);
 
-		//If we rolled all the dice but got no points, return 750 points.
-		if (points == 0 && valCounts[0] == 0)
+		//If we kept all the dice but got no points, return 750 points.
+		if (points == 0 && diceToKeep == DiceEngine.ALL_DICE)
 			points = 750;
 		
 		return points;
@@ -36,7 +39,7 @@ public abstract class PointCalculator {
 		for (byte die = 0; die < 6; die++) {
 			counts[dieVals[die]]++;
 		}
-		return PointCalculator.pointsFrom(counts);
+		return PointCalculator.pointsFromCounts(diceToKeep, counts);
 	}
 	
 }

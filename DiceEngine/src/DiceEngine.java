@@ -7,8 +7,8 @@ public class DiceEngine {
 	private ArrayList<Player> players;
 	private Player me, my = me, I = me;
 	
-	private byte ALL_DICE = 0;
-	private byte NO_DICE = ~0;
+	public static byte ALL_DICE = ~0;
+	public static byte NO_DICE = 0;
 	
 	private int POINTS_TO_GET_ON_BOARD = 1000;
 	private int POINTS_TO_WIN = 10000;
@@ -66,19 +66,25 @@ public class DiceEngine {
 		
 	}
 	
-	private byte decideWhatToKeep(byte[] roll, int points, byte kept){
-		return kept;
+	private byte decideWhatToKeep(byte[] roll, int points, byte alreadyKept){
+		//Loop through all possible keeps except null keep.
+		int kept = alreadyKept;
+		byte i = 1;
+		while (kept < ALL_DICE) {
+			kept = alreadyKept | i;
+		}
+		return (byte)kept;
 	}
 	
 	private byte[] getRoll(int dice){
 		byte[] dieVals = new byte[6];
 		for (byte i = 0; i < 6; i++)
-			if ((dice>>>i)%2 == 0)
+			if ((dice>>>i)%2 == 1)
 				dieVals[i] = gui.requestDieInput(i);
 		return dieVals;
 	}
 	
 	private byte die(byte index){
-		return (byte)~(1<<index);
+		return (byte)(1<<index);
 	}
 }
